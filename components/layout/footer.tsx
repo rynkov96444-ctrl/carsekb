@@ -38,12 +38,12 @@ export function Footer() {
       <div className="container py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-blue-600">
-                <Car className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-xl font-bold">CarsEkb</span>
-            </Link>
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+              <Car className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-xl font-bold">CarsEkb</span>
+          </Link>
             <p className="mt-4 text-sm text-muted-foreground">
               Автомобильный портал Екатеринбурга. Всё для автолюбителей в одном месте.
             </p>

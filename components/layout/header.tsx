@@ -29,10 +29,10 @@ export function Header() {
   const [moreMenuOpen, setMoreMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex h-16 items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-blue-600 shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
             <Car className="h-5 w-5 text-white" />
           </div>
           <span className="text-xl font-bold tracking-tight">CarsEkb</span>

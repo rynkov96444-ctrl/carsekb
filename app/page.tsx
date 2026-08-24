@@ -73,18 +73,17 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative overflow-hidden border-b bg-gradient-to-br from-background via-muted/30 to-background">
-        <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-black/10" />
+      <section className="relative overflow-hidden border-b bg-muted/30">
         <div className="container relative flex flex-col items-center justify-center gap-6 py-24 md:py-32 text-center">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full border bg-background/50 px-4 py-1.5 text-sm backdrop-blur">
+            <div className="inline-flex items-center gap-2 rounded-full border bg-background px-4 py-1.5 text-sm">
               <Zap className="h-4 w-4 text-primary" />
               <span>Автомобильный портал №1 в Екатеринбурге</span>
             </div>
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
               Всё для автолюбителей
               <br />
-              <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              <span className="text-primary">
                 в одном месте
               </span>
             </h1>
@@ -120,19 +119,19 @@ export default function Home() {
         <div className="grid gap-6 md:grid-cols-3">
           {features.map((feature) => (
             <Link key={feature.title} href={feature.href} className="group">
-              <Card className="h-full transition-all hover:shadow-xl hover:-translate-y-1">
+              <Card className="h-full">
                 <CardHeader>
-                  <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br ${feature.color}`}>
+                  <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary`}>
                     <feature.icon className="h-6 w-6 text-white" />
                   </div>
-                  <CardTitle className="group-hover:text-primary transition-colors">
+                  <CardTitle>
                     {feature.title}
                   </CardTitle>
                   <CardDescription>{feature.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center text-sm font-medium text-primary">
-                    Подробнее <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    Подробнее <ArrowRight className="ml-1 h-4 w-4" />
                   </div>
                 </CardContent>
               </Card>
@@ -218,7 +217,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="container py-16 md:py-24">
-        <div className="rounded-2xl bg-gradient-to-br from-primary to-blue-600 p-8 md:p-12 text-center text-white">
+        <div className="rounded-2xl bg-primary p-8 md:p-12 text-center text-white">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             У вас автосервис?
           </h2>
