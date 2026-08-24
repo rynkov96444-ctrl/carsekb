@@ -9,6 +9,11 @@ const inter = Inter({ subsets: ["latin", "cyrillic"] })
 export const metadata: Metadata = {
   title: "CarsEkb — Автомобильный портал Екатеринбурга",
   description: "Детейлинг центры, малярные станции, привоз авто из-за рубежа, car spotting — всё в одном месте",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+  },
 }
 
 export default function RootLayout({
