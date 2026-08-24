@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
 
 export async function GET(request: NextRequest) {
   try {
+    const { prisma } = await import("@/lib/prisma")
     const { searchParams } = new URL(request.url)
     const category = searchParams.get("category")
     
@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const { prisma } = await import("@/lib/prisma")
     const body = await request.json()
     
     const service = await prisma.service.create({

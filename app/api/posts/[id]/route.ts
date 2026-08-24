@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const { prisma } = await import("@/lib/prisma")
     const post = await prisma.post.findUnique({
       where: { id: params.id }
     })
@@ -26,6 +26,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { prisma } = await import("@/lib/prisma")
     const body = await request.json()
     
     const post = await prisma.post.update({
@@ -51,6 +52,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { prisma } = await import("@/lib/prisma")
     await prisma.post.delete({
       where: { id: params.id }
     })
