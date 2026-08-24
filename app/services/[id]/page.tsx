@@ -1,25 +1,9 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
 import Link from "next/link"
-import { MapPin, Star, Phone, Globe, Instagram, ArrowLeft, Loader2 } from "lucide-react"
+import { MapPin, Star, Phone, Globe, Instagram, ArrowLeft } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-
-interface Service {
-  id: string
-  name: string
-  category: string
-  description: string | null
-  address: string
-  phone: string | null
-  website: string | null
-  instagram: string | null
-  rating: number
-  reviewCount: number
-  images: string[]
-}
+import { prisma } from "@/lib/prisma"
+import { notFound } from "next/navigation"
 
 const categoryNames: Record<string, string> = {
   DETAILING: "Детейлинг",
@@ -31,45 +15,20 @@ const categoryNames: Record<string, string> = {
   OTHER: "Другое"
 }
 
-export default function ServicePage() {
-  const params = useParams()
-  const [service, setService] = useState<Service | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchService()
-  }, [params.id])
-
-  const fetchService = async () => {
-    try {
-      const res = await fetch(`/api/services/${params.id}`)
-      const data = await res.json()
-      setService(data)
-    } catch (error) {
-      console.error("Ошибка загрузки:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="container py-12 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    )
-  }
+export default async function ServicePage({
+  params,
+}: {
+  params: { id: string }
+}) {
+  const service = await prisma.service.findUnique({
+    where: { id: params.id },
+  })
 
   if (!service) {
-    return (
-      <div className="container py-12 text-center">
-        <h1 className="text-2xl font-bold">Сервис не найден</h1>
-        <Button className="mt-4" asChild>
-          <Link href="/services">Вернуться к списку</Link>
-        </Button>
-      </div>
-    )
+    notFound()
   }
+
+  const images = JSON.parse(service.images || "[]")
 
   return (
     <div className="container py-8 md:py-12">
@@ -82,15 +41,14 @@ export default function ServicePage() {
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          {/* Галерея */}
-          {service.images && service.images.length > 0 && (
+          {images.length > 0 && (
             <div className="space-y-4">
               <div className="aspect-video rounded-lg overflow-hidden">
-                <img src={service.images[0]} alt={service.name} className="w-full h-full object-cover" />
+                <img src={images[0]} alt={service.name} className="w-full h-full object-cover" />
               </div>
-              {service.images.length > 1 && (
+              {images.length > 1 && (
                 <div className="grid grid-cols-4 gap-2">
-                  {service.images.slice(1, 5).map((img, idx) => (
+                  {images.slice(1, 5).map((img: string, idx: number) => (
                     <div key={idx} className="aspect-square rounded-lg overflow-hidden">
                       <img src={img} alt="" className="w-full h-full object-cover" />
                     </div>
@@ -100,7 +58,6 @@ export default function ServicePage() {
             </div>
           )}
 
-          {/* Описание */}
           <Card>
             <CardHeader>
               <CardTitle>О сервисе</CardTitle>
@@ -113,7 +70,6 @@ export default function ServicePage() {
           </Card>
         </div>
 
-        {/* Информация */}
         <div className="space-y-6">
           <Card>
             <CardHeader>

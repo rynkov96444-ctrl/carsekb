@@ -1,60 +1,20 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Calendar, Loader2 } from "lucide-react"
+import { ArrowLeft, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { prisma } from "@/lib/prisma"
+import { notFound } from "next/navigation"
 
-interface Post {
-  id: string
-  title: string
-  slug: string
-  content: string
-  excerpt: string | null
-  coverImage: string | null
-  createdAt: string
-}
-
-export default function PostPage() {
-  const params = useParams()
-  const [post, setPost] = useState<Post | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchPost()
-  }, [params.slug])
-
-  const fetchPost = async () => {
-    try {
-      const res = await fetch("/api/posts")
-      const posts = await res.json()
-      const foundPost = posts.find((p: Post) => p.slug === params.slug)
-      setPost(foundPost || null)
-    } catch (error) {
-      console.error("Ошибка загрузки:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="container py-12 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    )
-  }
+export default async function PostPage({
+  params,
+}: {
+  params: { slug: string }
+}) {
+  const post = await prisma.post.findFirst({
+    where: { slug: params.slug, published: true },
+  })
 
   if (!post) {
-    return (
-      <div className="container py-12 text-center">
-        <h1 className="text-2xl font-bold">Статья не найдена</h1>
-        <Button className="mt-4" asChild>
-          <Link href="/blog">Вернуться к блогу</Link>
-        </Button>
-      </div>
-    )
+    notFound()
   }
 
   return (

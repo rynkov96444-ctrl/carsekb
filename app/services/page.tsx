@@ -1,21 +1,8 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import { MapPin, Star, Users } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-
-interface Service {
-  id: string
-  name: string
-  category: string
-  address: string
-  phone: string | null
-  rating: number
-  reviewCount: number
-  images: string[]
-}
+import { prisma } from "@/lib/prisma"
 
 const categories = [
   { id: "DETAILING", name: "Детейлинг" },
@@ -35,30 +22,22 @@ const categoryNames: Record<string, string> = {
   OTHER: "Другое"
 }
 
-export default function ServicesPage() {
-  const [services, setServices] = useState<Service[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+export default async function ServicesPage({
+  searchParams,
+}: {
+  searchParams: { category?: string }
+}) {
+  const selectedCategory = searchParams.category || null
 
-  useEffect(() => {
-    fetchServices()
-  }, [selectedCategory])
+  const services = await prisma.service.findMany({
+    where: selectedCategory ? { category: selectedCategory } : {},
+    orderBy: { createdAt: "desc" },
+  })
 
-  const fetchServices = async () => {
-    setLoading(true)
-    try {
-      const url = selectedCategory 
-        ? `/api/services?category=${selectedCategory}`
-        : "/api/services"
-      const res = await fetch(url)
-      const data = await res.json()
-      setServices(data)
-    } catch (error) {
-      console.error("Ошибка загрузки:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const servicesWithImages = services.map(service => ({
+    ...service,
+    images: JSON.parse(service.images || "[]"),
+  }))
 
   return (
     <div className="container py-8 md:py-12">
@@ -71,33 +50,27 @@ export default function ServicesPage() {
         </p>
       </div>
 
-      {/* Категории */}
       <div className="mb-8 flex flex-wrap gap-2">
         {categories.map((category) => (
-          <Button 
-            key={category.id} 
-            variant={selectedCategory === category.id ? "default" : "outline"} 
-            size="sm"
-            onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
-          >
-            {category.name}
-          </Button>
+          <Link key={category.id} href={selectedCategory === category.id ? "/services" : `/services?category=${category.id}`}>
+            <Button
+              variant={selectedCategory === category.id ? "default" : "outline"}
+              size="sm"
+            >
+              {category.name}
+            </Button>
+          </Link>
         ))}
       </div>
 
-      {/* Список сервисов */}
-      {loading ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Загрузка...</p>
-        </div>
-      ) : services.length === 0 ? (
+      {servicesWithImages.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-muted-foreground">Сервисы пока не добавлены</p>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((service) => (
-            <Card key={service.id} className="overflow-hidden transition-shadow hover:shadow-lg">
+          {servicesWithImages.map((service) => (
+            <Card key={service.id} className="overflow-hidden">
               {service.images && service.images.length > 0 ? (
                 <div className="aspect-video">
                   <img src={service.images[0]} alt={service.name} className="w-full h-full object-cover" />
@@ -134,7 +107,6 @@ export default function ServicesPage() {
         </div>
       )}
 
-      {/* CTA */}
       <div className="mt-12 text-center">
         <h2 className="text-2xl font-bold">У вас сервис?</h2>
         <p className="mt-2 text-muted-foreground">
